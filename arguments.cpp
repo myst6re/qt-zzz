@@ -20,13 +20,7 @@
 #include <QTextStream>
 
 Arguments::Arguments() :
-    _extract(
-#ifndef UNZZZ
-		false
-#else
-		true
-#endif
-        ), _help(false), _quiet(false)
+    _extract(false), _help(false), _quiet(false)
 {
 	parse();
 }
@@ -36,7 +30,7 @@ const QStringList &Arguments::paths() const
 	return _paths;
 }
 
-const QDir &Arguments::destination() const
+const QDir &Arguments::directory() const
 {
 	return _directory;
 }
@@ -61,30 +55,47 @@ void Arguments::parse()
 	QStringList args = qApp->arguments();
 	args.removeFirst(); // Application path
 
-	while (!args.isEmpty()) {
+	if (!args.isEmpty()) {
 		const QString &arg = args.takeFirst();
 
-		if (arg == "-e" || arg == "--extract") {
+		if (arg == "extract") {
 			_extract = true;
-		} else if (arg == "-h" || arg == "--help") {
-			_help = true;
-		} else if (arg == "-q" || arg == "--quiet") {
-			_quiet = true;
+		} else if (arg == "pack") {
+			_extract = false;
 		} else {
-			_paths << arg;
+			_help = true;
 		}
-	}
 
-	wilcardParse();
+		bool stopOptions = false;
+
+		while (!args.isEmpty()) {
+			const QString &arg = args.takeFirst();
+
+			if (!stopOptions) {
+				if (arg == "-h" || arg == "--help") {
+					_help = true;
+				} else if (arg == "-q" || arg == "--quiet") {
+					_quiet = true;
+				} else if (arg == "--") {
+					stopOptions = true;
+				} else {
+					_paths << arg;
+				}
+			} else {
+				_paths << arg;
+			}
+		}
+
+		wilcardParse();
+	} else {
+		_help = true;
+	}
 }
 
 QMap<QString, QString> Arguments::commands() const
 {
 	QMap<QString, QString> options;
 
-#ifndef UNZZZ
-	options["-e --extract"] = "Extract.";
-#endif
 	options["-h --help"] = "Show this help and quit.";
 	options["-q --quiet"] = "Suppress all outputs";
 
@@ -94,11 +105,9 @@ QMap<QString, QString> Arguments::commands() const
 void Arguments::showHelp(int exitCode)
 {
 	QTextStream out(stdout, QIODevice::WriteOnly);
-#ifdef UNZZZ
-	out << "unzzz [files...] [output directory]\n";
-#else
-	out << "zzz [-d] [files...] [output directory]\n";
-#endif
+	out << "zzz extract ZZZ_FILE [ZZZ_FILE2...] OUTPUT_DIR\n";
+	out << "zzz pack ZZZ_FILE SOURCE_DIR\n";
+
 	out << "Options\n";
 
 	QMapIterator<QString, QString> it(commands());

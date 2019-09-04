@@ -16,12 +16,14 @@
  ****************************************************************************/
 #include "observer.h"
 #include <stdio.h>
+#include <QDebug>
 
 Observer::Observer()
 {
 }
 
-ObserverPercent::ObserverPercent()
+ObserverPercent::ObserverPercent() :
+    _lastPercent(255)
 {
 }
 
@@ -42,4 +44,5 @@ ObserverStdOut::ObserverStdOut()
 void ObserverStdOut::setPercent(quint8 percent)
 {
 	printf("[%d%%] %s\r", percent, qPrintable(_filename));
+	fflush(stdout);
 }

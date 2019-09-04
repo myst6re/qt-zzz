@@ -27,7 +27,7 @@ public:
 	Arguments();
 	[[ noreturn ]] void showHelp(int exitCode = 0);
 	const QStringList &paths() const;
-	const QDir &destination() const;
+	const QDir &directory() const;
 	bool extract() const;
 	bool help() const;
 	bool quiet() const;

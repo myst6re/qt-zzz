@@ -54,11 +54,13 @@ int main(int argc, char *argv[])
 			Zzz zzz(path);
 
 			if (args.extract()) {
-				if (!zzz.extractTo(args.destination(), observer)) {
+				if (!zzz.extractTo(args.directory(), observer)) {
 					std::cout << "Error " << qPrintable(zzz.lastInErrorString()) << qPrintable(zzz.lastOutErrorString());
 				}
 			} else {
-				std::cout << "Not implemented";
+				if (!zzz.packFrom(args.directory(), observer)) {
+					std::cout << "Error " << qPrintable(zzz.lastInErrorString()) << qPrintable(zzz.lastOutErrorString());
+				}
 			}
 		}
 	}
