@@ -2,7 +2,6 @@
 #include "zzzfile.h"
 #include <QMap>
 #include <QDirIterator>
-#include <QDebug>
 
 Zzz::Zzz(const QString &fileName) : f(fileName)
 {

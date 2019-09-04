@@ -16,7 +16,6 @@
  ****************************************************************************/
 #include "observer.h"
 #include <stdio.h>
-#include <QDebug>
 
 Observer::Observer()
 {
